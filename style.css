@@ -1,0 +1,653 @@
+/* Premium Design CSS for Newton-Gregory Interpolation */
+
+/* Import elegant fonts */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+/* Premium color palette and variables */
+:root {
+    /* Core colors */
+    --primary: #6366f1;
+    --primary-light: #818cf8;
+    --primary-dark: #4f46e5;
+    --secondary: #f0f9ff;
+    --accent: #10b981;
+    --accent-light: #34d399;
+    
+    /* Neutrals */
+    --white: #ffffff;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+    --gray-900: #0f172a;
+    --black: #020617;
+    
+    /* Feedback colors */
+    --success: #10b981;
+    --error: #ef4444;
+    --warning: #f59e0b;
+    --info: #3b82f6;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    --gradient-accent: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+    --gradient-light: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+    
+    /* Border radius */
+    --radius-sm: 0.375rem;
+    --radius: 0.5rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+    --radius-full: 9999px;
+    
+    /* Spacing */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+    
+    /* Typography */
+    --font-sans: 'Outfit', system-ui, sans-serif;
+    --font-mono: 'Space Mono', monospace;
+    
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Global app styling with elegant background */
+.stApp {
+    background: linear-gradient(135deg, #f6f7ff 0%, #eef1ff 100%);
+    font-family: var(--font-sans);
+    color: var(--gray-800);
+    line-height: 1.6;
+}
+
+/* Main content container with glass effect */
+.content {
+    max-width: 900px;
+    margin: var(--space-10) auto;
+    padding: var(--space-10);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Decorative elements */
+.content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-primary);
+    z-index: 1;
+}
+
+.content::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Main heading with gradient */
+.content h1 {
+    color: var(--gray-900);
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: var(--space-8);
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.content h1::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-full);
+}
+
+/* Section headings with elegant styling */
+.content h3 {
+    color: var(--gray-800);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: var(--space-8) 0 var(--space-4) 0;
+    padding: var(--space-4) var(--space-6);
+    background: var(--gray-50);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--primary);
+    letter-spacing: -0.01em;
+    box-shadow: var(--shadow-sm);
+    display: inline-block;
+}
+
+/* Input fields with floating effect */
+div[data-testid="stNumberInput"] > div > div > input {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: var(--space-4) var(--space-5);
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: var(--gray-800);
+    transition: all var(--transition);
+    box-shadow: var(--shadow-sm);
+}
+
+div[data-testid="stNumberInput"] > div > div > input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    outline: none;
+    transform: translateY(-1px);
+}
+
+div[data-testid="stNumberInput"] > div > div > input:hover {
+    border-color: var(--primary-light);
+    transform: translateY(-1px);
+}
+
+/* Input labels with elegant styling */
+div[data-testid="stNumberInput"] label {
+    color: var(--gray-700);
+    font-weight: 500;
+    font-size: 0.875rem;
+    margin-bottom: var(--space-2);
+    letter-spacing: 0.01em;
+}
+
+/* All buttons with gradient and hover effect */
+button[data-testid="baseButton-secondary"] {
+    background: var(--gradient-primary);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius);
+    padding: var(--space-3) var(--space-5);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+    box-shadow: var(--shadow), 0 0 0 0 rgba(99, 102, 241, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+button[data-testid="baseButton-secondary"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: all 0.6s ease;
+}
+
+button[data-testid="baseButton-secondary"]:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md), 0 0 0 3px rgba(99, 102, 241, 0.25);
+}
+
+button[data-testid="baseButton-secondary"]:hover::before {
+    left: 100%;
+}
+
+button[data-testid="baseButton-secondary"]:active {
+    transform: translateY(0);
+}
+
+/* Remove button (❌) with elegant styling */
+button[data-testid="baseButton-secondary"]:contains("❌") {
+    background: var(--white);
+    color: var(--gray-500);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-full);
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    box-shadow: var(--shadow-sm);
+}
+
+button[data-testid="baseButton-secondary"]:contains("❌")::before {
+    display: none;
+}
+
+button[data-testid="baseButton-secondary"]:contains("❌"):hover {
+    background: var(--gray-50);
+    color: var(--error);
+    border-color: var(--error);
+    transform: translateY(-1px) scale(1.05);
+}
+
+/* Add button (➕) with accent styling */
+button[data-testid="baseButton-secondary"]:contains("➕") {
+    background: var(--gradient-accent);
+    color: var(--white);
+    padding: var(--space-3) var(--space-6);
+    font-weight: 500;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow), 0 0 0 0 rgba(16, 185, 129, 0.5);
+}
+
+button[data-testid="baseButton-secondary"]:contains("➕"):hover {
+    box-shadow: var(--shadow-md), 0 0 0 3px rgba(16, 185, 129, 0.25);
+}
+
+/* Predict button with premium styling */
+button[data-testid="baseButton-secondary"]:contains("Prediksi") {
+    background: var(--gradient-primary);
+    color: var(--white);
+    padding: var(--space-4) var(--space-10);
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    letter-spacing: 0.01em;
+    box-shadow: var(--shadow-md), 0 0 0 0 rgba(99, 102, 241, 0.5);
+    margin-top: var(--space-4);
+}
+
+button[data-testid="baseButton-secondary"]:contains("Prediksi"):hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg), 0 0 0 3px rgba(99, 102, 241, 0.3);
+}
+
+/* Success message with elegant styling */
+.stSuccess {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--gray-800);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-left: 4px solid var(--success);
+    padding: var(--space-5) var(--space-6);
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin: var(--space-6) 0;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Error message with elegant styling */
+.stError {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--gray-800);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-left: 4px solid var(--error);
+    padding: var(--space-5) var(--space-6);
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin: var(--space-6) 0;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Table styling with elegant design */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: var(--space-6) 0;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+}
+
+table th {
+    background: var(--gradient-light);
+    color: var(--gray-800);
+    padding: var(--space-4) var(--space-5);
+    font-weight: 600;
+    text-align: center;
+    border-bottom: 1px solid var(--gray-200);
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+table td {
+    padding: var(--space-3) var(--space-5);
+    text-align: center;
+    border-bottom: 1px solid var(--gray-100);
+    color: var(--gray-700);
+    font-weight: 400;
+    transition: all var(--transition-fast);
+}
+
+table tr:last-child td {
+    border-bottom: none;
+}
+
+table tr:hover td {
+    background: var(--gray-50);
+    color: var(--gray-900);
+}
+
+/* Container styling with elegant cards */
+div[data-testid="stVerticalBlock"] > div[data-testid="stVerticalBlock"] {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+    margin: var(--space-5) 0;
+    box-shadow: var(--shadow);
+    transition: all var(--transition);
+}
+
+div[data-testid="stVerticalBlock"] > div[data-testid="stVerticalBlock"]:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    border-color: var(--gray-300);
+}
+
+/* Horizontal rule with elegant styling */
+hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gray-300), transparent);
+    margin: var(--space-8) 0;
+}
+
+/* Plot container with elegant styling */
+div[data-testid="stPlotlyChart"] {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+    margin: var(--space-6) 0;
+    box-shadow: var(--shadow);
+    transition: all var(--transition);
+}
+
+div[data-testid="stPlotlyChart"]:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+/* Column spacing */
+div[data-testid="column"] {
+    padding: 0 var(--space-2);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .content {
+        margin: var(--space-4);
+        padding: var(--space-6);
+    }
+    
+    .content h1 {
+        font-size: 2rem;
+    }
+    
+    .content h3 {
+        font-size: 1.1rem;
+        padding: var(--space-3) var(--space-4);
+    }
+    
+    button[data-testid="baseButton-secondary"] {
+        padding: var(--space-2) var(--space-4);
+        font-size: 0.85rem;
+    }
+    
+    div[data-testid="stNumberInput"] > div > div > input {
+        padding: var(--space-3) var(--space-4);
+        font-size: 0.9rem;
+    }
+    
+    div[data-testid="column"] {
+        padding: 0 var(--space-1);
+    }
+}
+
+/* Focus states with elegant outline */
+button:focus,
+input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+}
+
+/* Smooth transitions */
+* {
+    transition: all var(--transition);
+}
+
+/* Loading spinner with elegant styling */
+div[data-testid="stSpinner"] {
+    border: 3px solid rgba(99, 102, 241, 0.1);
+    border-top: 3px solid var(--primary);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin: var(--space-6) auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Sidebar styling */
+section[data-testid="stSidebar"] {
+    background: var(--white);
+    border-right: 1px solid var(--gray-200);
+}
+
+/* Metric styling */
+div[data-testid="metric-container"] {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: var(--space-4);
+    box-shadow: var(--shadow);
+    transition: all var(--transition);
+}
+
+div[data-testid="metric-container"]:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Elegant icons */
+.stSuccess::before {
+    content: "✓ ";
+    margin-right: var(--space-2);
+    font-weight: 600;
+    color: var(--success);
+}
+
+.stError::before {
+    content: "! ";
+    margin-right: var(--space-2);
+    font-weight: 600;
+    color: var(--error);
+}
+
+/* Elegant scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--gray-100);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gray-300);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--gray-400);
+}
+
+/* Typography refinements */
+p, div, span {
+    color: var(--gray-700);
+    font-weight: 400;
+}
+
+strong, b {
+    color: var(--gray-900);
+    font-weight: 600;
+}
+
+/* Clean selection */
+::selection {
+    background: var(--primary-light);
+    color: var(--white);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+}
+
+/* Highlight important elements */
+.stSuccess strong, .stError strong {
+    color: inherit;
+    font-weight: 700;
+}
+
+/* Enhance form layout */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+/* Improve number input appearance */
+div[data-testid="stNumberInput"] {
+    margin-bottom: var(--space-2);
+}
+
+/* Add subtle animations to the app */
+.content {
+    animation: fadeIn 0.6s ease-out;
+}
+
+button[data-testid="baseButton-secondary"]:contains("Prediksi") {
+    animation: pulse 2s infinite;
+}
+
+/* Enhance plot appearance */
+div[data-testid="stPlotlyChart"] svg {
+    border-radius: var(--radius);
+}
+
+/* Improve mobile experience */
+@media (max-width: 480px) {
+    .content {
+        padding: var(--space-4);
+    }
+    
+    .content h1 {
+        font-size: 1.75rem;
+    }
+    
+    button[data-testid="baseButton-secondary"]:contains("Prediksi") {
+        width: 100%;
+    }
+}
+
+/* Add glass effect to containers */
+div[data-testid="stVerticalBlock"] > div[data-testid="stVerticalBlock"] {
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.8);
+}
+
+/* Improve accessibility */
+button, input {
+    font-family: var(--font-sans);
+}
+
+/* Add subtle texture */
+.stApp::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%236366f1' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Enhance number display */
+.stSuccess, .stError {
+    font-family: var(--font-sans);
+}
+
+.stSuccess strong, .stError strong {
+    font-family: var(--font-mono);
+    letter-spacing: -0.01em;
+}
+
+/* Add subtle hover effect to inputs */
+div[data-testid="stNumberInput"]:hover label {
+    color: var(--primary);
+}
